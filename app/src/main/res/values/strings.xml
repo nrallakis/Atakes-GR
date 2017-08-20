@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Ατάκες GR</string>
+    <string name="title">Ατάκες GR</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="random_choice">Τυχαία ατάκα του %1$s</string>
+    <string name="increase_volume">Δυνάμωσε τον ήχο!</string>
+
+    <string name="chios">ΧΙΟΣ</string>
+    <string name="tsoukalas">ΤΣΟΥΚΑΛΑΣ</string>
+    <string name="other">ΔΙΑΦΟΡΑ</string>
+
+    <string name="action_random_selection">Τυχαια ατακα</string>
+    <string name="action_rate">Rate us</string>
+    <string name="action_about">About</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="about_info">
+        <![CDATA[
+        <p>Για οποιαδήποτε συμβουλή βελτίωσης ή προσθήκης ατάκας θα εκτιμούσαμε πολύ αν μας στέλνατε email στο <b>nrallakis4@gmail.com</b></p> <br>
+        <p>Αν σας αρέσει η εφαρμογή στηρίξτε μας κάνοντας ένα καλό <b><font color="#f1c40f">rating</font></b>.</p>]]>
+    </string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-7739991390722327/6478754770</string>
+
+    <string name="play_background_label">Play on background</string>
+    <string name="play_background_key" translatable="false">play_background</string>
+
+</resources>

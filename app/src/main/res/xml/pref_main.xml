@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_play_background_default"
+        android:title="@string/play_background_label"
+        android:textColor="@android:color/white"
+        app:key="@string/play_background_key" />
+</PreferenceScreen>
