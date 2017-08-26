@@ -2,6 +2,7 @@ package rallakis.nicholas.atakesgr;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
@@ -11,9 +12,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,21 +26,21 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.iid.FirebaseInstanceId;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SoundChangeListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String LOCATION_CODE = "inapp";
 
     private FirebaseAnalytics mFirebaseAnalytics;
-    private AdView mAdView;
 
     private ViewPager mViewPager;
+
+    private Menu mMenu;
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop()");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean shouldPlayOnBackground = prefs.getBoolean(getString(R.string.play_background_key),
                 getResources().getBoolean(R.bool.pref_play_background_default));
@@ -51,12 +53,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setTitle(getString(R.string.title));
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
-        Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
 
         setupAds();
         setupViewPager();
@@ -64,14 +66,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupAds() {
-        mAdView = (AdView) findViewById(R.id.adView);
+        AdView mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
     }
 
     private void setupViewPager() {
         CustomViewPagerAdapter adapter = new CustomViewPagerAdapter(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(adapter);
     }
 
@@ -89,11 +91,21 @@ public class MainActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {}
         };
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setOnTabSelectedListener(tabListener);
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.newatakes)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.chios)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.tsoukalas)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.chatzistefanou)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.other)));
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+    }
+
+    @Override
+    public void onSoundChange() {
+        // Change play icon to pause when the sound changes
+        Drawable drawable = AppCompatDrawableManager.get().getDrawable(this, R.drawable.ic_pause);
+        mMenu.getItem(0).setIcon(drawable);
     }
 
     private class CustomViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -124,8 +136,14 @@ public class MainActivity extends AppCompatActivity {
                 case SoundList.TSOUKALAS:
                     soundsName = getString(R.string.tsoukalas);
                     break;
+                case SoundList.CHATZISTEFANOU:
+                    soundsName = getString(R.string.chatzistefanou);
+                    break;
                 case SoundList.OTHER:
                     soundsName = getString(R.string.other);
+                    break;
+                case SoundList.NEWATAKES:
+                    soundsName = getString(R.string.newatakes);
                     break;
             }
             return soundsName;
@@ -134,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        mMenu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
         return true;
@@ -161,13 +180,23 @@ public class MainActivity extends AppCompatActivity {
             showAboutDialog();
             logAboutItemClicked();
         }
+        else if (id == R.id.action_pause) {
+            SoundPlayer player = SoundPlayer.getInstance(getApplicationContext());
+            if (player.isPlaying()) {
+                player.pause();
+                mMenu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_play));
+            } else {
+                player.start();
+                mMenu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_pause));
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
     private void showAboutDialog() {
         View messageView = getLayoutInflater().inflate(R.layout.dialog_about, null, false);
 
-        TextView infoLabel = (TextView) messageView.findViewById(R.id.about_info);
+        TextView infoLabel = messageView.findViewById(R.id.about_info);
         infoLabel.setText(Html.fromHtml(getString(R.string.about_info)));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

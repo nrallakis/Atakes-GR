@@ -33,6 +33,28 @@ public class SoundPlayer {
         mLastSoundResource = soundResource;
     }
 
+    public void start() {
+        if (mPlayer != null) {
+            mPlayer.start();
+        }
+    }
+
+    public boolean isPlaying() {
+        if (mPlayer != null) {
+            return mPlayer.isPlaying();
+        }
+        return false;
+    }
+
+    public void pause() {
+        if (mPlayer == null) return;
+        if (mPlayer.isPlaying()) {
+            mPlayer.pause();
+        } else {
+            mPlayer.start();
+        }
+    }
+
     public void stop() {
         if (mPlayer == null) return;
         mPlayer.stop();

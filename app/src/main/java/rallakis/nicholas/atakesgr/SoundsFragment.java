@@ -18,15 +18,17 @@ import android.widget.LinearLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 
-public class SoundsFragment extends Fragment {
+public class SoundsFragment extends Fragment implements PlayButtonListener {
 
     public static final String EXTRA_SOUNDS_NAME = "sounds_name";
 
     private SoundList mSoundList;
 
-    public static SoundsFragment newInstance(int soundsName) {
+    private SoundChangeListener mSoundChangeListener;
+
+    public static SoundsFragment newInstance(int soundListName) {
         Bundle args = new Bundle();
-        args.putInt(EXTRA_SOUNDS_NAME, soundsName);
+        args.putInt(EXTRA_SOUNDS_NAME, soundListName);
 
         SoundsFragment fragment = new SoundsFragment();
         fragment.setArguments(args);
@@ -69,7 +71,7 @@ public class SoundsFragment extends Fragment {
         });
 
         GridView gridView = view.findViewById(R.id.button_grid);
-        gridView.setAdapter(new ButtonGridViewAdapter(getContext(), mSoundList));
+        gridView.setAdapter(new ButtonGridViewAdapter(getContext(), mSoundList, this));
 
         return view;
     }
@@ -89,5 +91,21 @@ public class SoundsFragment extends Fragment {
         bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
         BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
         view.setBackground(bitmapDrawable);
+    }
+
+    @Override
+    public void onPlayClick(Sound sound) {
+        ((SoundChangeListener) getActivity()).onSoundChange();
+        Utils.handleSoundAvailability(getActivity());
+        SoundPlayer.getInstance(getActivity()).playSound(sound);
+        logPlayButtonClicked(sound.getName());
+    }
+
+    private void logPlayButtonClicked(String name) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, name);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "button");
+        FirebaseAnalytics.getInstance(getContext()).logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 }

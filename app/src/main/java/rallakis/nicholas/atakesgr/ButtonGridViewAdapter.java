@@ -2,7 +2,6 @@ package rallakis.nicholas.atakesgr;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,19 +10,19 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 public class ButtonGridViewAdapter extends ArrayAdapter<Sound> {
 
     public static final String TAG = ButtonGridViewAdapter.class.getSimpleName();
 
     private SoundList mSoundList;
     private SoundPlayer mPlayer;
+    private PlayButtonListener mListener;
 
-    public ButtonGridViewAdapter(Context context, SoundList soundList) {
+    public ButtonGridViewAdapter(Context context, SoundList soundList, PlayButtonListener listener) {
         super(context, R.layout.button);
         mSoundList = soundList;
         mPlayer = SoundPlayer.getInstance(context);
+        mListener = listener;
     }
 
     @Override
@@ -48,25 +47,15 @@ public class ButtonGridViewAdapter extends ArrayAdapter<Sound> {
 
         final Sound sound = mSoundList.getSound(position);
 
-        Button playButton = (Button) child.findViewById(R.id.play_button);
+        Button playButton = child.findViewById(R.id.play_button);
 
         playButton.setText(sound.getName());
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utils.handleSoundAvailability(getContext());
-                mPlayer.playSound(sound);
-                logPlayButtonClicked(sound.getName());
+                mListener.onPlayClick(sound);
             }
         });
         return child;
-    }
-
-    private void logPlayButtonClicked(String name) {
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, name);
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "button");
-        FirebaseAnalytics.getInstance(getContext()).logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 }

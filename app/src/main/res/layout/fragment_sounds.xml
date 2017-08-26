@@ -7,16 +7,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="rallakis.nicholas.atakesgr.MainActivity"
+    android:background="@color/yellow"
     android:padding="16dp">
 
     <Button
         android:id="@+id/random_play_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/random_choice"
         android:textAllCaps="false"
         android:textColor="@color/textLight"
         android:layout_margin="@dimen/radius_size"
+        tools:text="@string/random_choice"
         android:background="@drawable/red_button"/>
 
 
