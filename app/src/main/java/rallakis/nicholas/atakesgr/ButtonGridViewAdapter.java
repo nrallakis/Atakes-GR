@@ -14,20 +14,20 @@ public class ButtonGridViewAdapter extends ArrayAdapter<Sound> {
 
     public static final String TAG = ButtonGridViewAdapter.class.getSimpleName();
 
-    private SoundList mSoundList;
+    private SoundList.PlayLists mPlayList;
     private SoundPlayer mPlayer;
     private PlayButtonListener mListener;
 
-    public ButtonGridViewAdapter(Context context, SoundList soundList, PlayButtonListener listener) {
+    public ButtonGridViewAdapter(Context context, SoundList.PlayLists playList, PlayButtonListener listener) {
         super(context, R.layout.button);
-        mSoundList = soundList;
+        mPlayList = playList;
         mPlayer = SoundPlayer.getInstance(context);
         mListener = listener;
     }
 
     @Override
     public int getCount() {
-        return mSoundList.getCount();
+        return mPlayList.getCount();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ButtonGridViewAdapter extends ArrayAdapter<Sound> {
             child = inflater.inflate(R.layout.button, parent, false);
         }
 
-        final Sound sound = mSoundList.getSound(position);
+        final Sound sound = mPlayList.getSound(position);
 
         Button playButton = child.findViewById(R.id.play_button);
 

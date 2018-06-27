@@ -22,7 +22,7 @@ public class SoundsFragment extends Fragment implements PlayButtonListener {
 
     public static final String EXTRA_SOUNDS_NAME = "sounds_name";
 
-    private SoundList mSoundList;
+    private SoundList.PlayLists mPlayList;
 
     private SoundChangeListener mSoundChangeListener;
 
@@ -43,7 +43,7 @@ public class SoundsFragment extends Fragment implements PlayButtonListener {
         Bundle args = getArguments();
         int soundsName = args.getInt(EXTRA_SOUNDS_NAME);
 
-        mSoundList = SoundList.get(soundsName);
+        mPlayList = SoundList.get(soundsName);
     }
 
     @Nullable
@@ -51,27 +51,27 @@ public class SoundsFragment extends Fragment implements PlayButtonListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sounds, container, false);
 
-        if (mSoundList.getBackground() != SoundList.NO_BACKGROUND) {
+        if (mPlayList.getBackground() != SoundList.NO_BACKGROUND) {
             LinearLayout root = view.findViewById(R.id.root_layout);
-            setBackground(getContext(), root, mSoundList.getBackground());
+            setBackground(getContext(), root, mPlayList.getBackground());
         }
 
         final SoundPlayer player = SoundPlayer.getInstance(getContext());
 
         Button randomPlayButton = view.findViewById(R.id.random_play_button);
-        randomPlayButton.setText(getString(R.string.random_choice, mSoundList.getName()));
+        randomPlayButton.setText(getString(R.string.random_choice, mPlayList.getName()));
         randomPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Utils.handleSoundAvailability(getContext());
-                int randomIndex = (int) (Math.random() * mSoundList.getCount());
-                player.playSound(mSoundList.getSound(randomIndex));
+                int randomIndex = (int) (Math.random() * mPlayList.getCount());
+                player.playSound(mPlayList.getSound(randomIndex));
                 logRandomPlayButtonClicked();
             }
         });
 
         GridView gridView = view.findViewById(R.id.button_grid);
-        gridView.setAdapter(new ButtonGridViewAdapter(getContext(), mSoundList, this));
+        gridView.setAdapter(new ButtonGridViewAdapter(getContext(), mPlayList, this));
 
         return view;
     }
@@ -79,7 +79,7 @@ public class SoundsFragment extends Fragment implements PlayButtonListener {
     private void logRandomPlayButtonClicked() {
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "RandomButton");
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, mSoundList.getName());
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, mPlayList.getName());
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "button");
         FirebaseAnalytics.getInstance(getContext()).logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }

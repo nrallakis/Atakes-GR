@@ -7,4 +7,5 @@
         android:title="@string/play_background_label"
         android:textColor="@android:color/white"
         app:key="@string/play_background_key" />
+
 </PreferenceScreen>

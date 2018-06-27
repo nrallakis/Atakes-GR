@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements SoundChangeListen
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setOnTabSelectedListener(tabListener);
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.newatakes)));
+        tabLayout.addTab(tabLayout.newTab().setText("ΜΠΑΣΚΕΤ"));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.chios)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.tsoukalas)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.chatzistefanou)));
@@ -130,20 +131,23 @@ public class MainActivity extends AppCompatActivity implements SoundChangeListen
         public CharSequence getPageTitle(int position) {
             String soundsName = null;
             switch (position) {
-                case SoundList.CHIOS:
+                case 0:
+                    soundsName = getString(R.string.newatakes);
+                    break;
+                case 1:
                     soundsName = getString(R.string.chios);
                     break;
-                case SoundList.TSOUKALAS:
+                case 2:
                     soundsName = getString(R.string.tsoukalas);
                     break;
-                case SoundList.CHATZISTEFANOU:
+                case 3:
+                    soundsName = "ΜΠΑΣΚΕΤ";
+                    break;
+                case 4:
                     soundsName = getString(R.string.chatzistefanou);
                     break;
-                case SoundList.OTHER:
+                case 5:
                     soundsName = getString(R.string.other);
-                    break;
-                case SoundList.NEWATAKES:
-                    soundsName = getString(R.string.newatakes);
                     break;
             }
             return soundsName;
